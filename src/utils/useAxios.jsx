@@ -13,7 +13,7 @@ const useAxios = () => {
     baseURL,
     timeout: 5000,
     headers: {
-      Authorization: `Bearer ${authState.authTokens?.access}`,
+      Authorization: `Bearer ${authState.access_token}`,
     },
   });
 
@@ -25,20 +25,27 @@ const useAxios = () => {
     // also update the headers of the axios req
     const isExpired = dayjs.unix(authState.user?.exp).diff(dayjs()) < 1;
     if (!isExpired) return config;
+    console.log("token expired \t refreshing...");
 
-    const response = await axios.post(`${baseURL}/api/token/refresh/`, {
-      refresh: authState.authTokens.refresh,
-    });
-    authDispatch({ type: "updateAccessToken", payload: response.data });
-    console.log(response);
-    localStorage.setItem(
-      "authTokens",
-      JSON.stringify({
-        refresh: authState.authTokens.refresh,
-        access: response.data.access,
-      })
+    const response = await axios.post(
+      `${baseURL}/dj-rest-auth/token/refresh/`,
+      {
+        refresh: authState.refresh_token,
+      }
     );
-    config.headers.Authorization = `Bearer ${response.data.access}`;
+    console.log(response);
+    if (response.status === 200) {
+      config.headers.Authorization = `Bearer ${response.data.access}`;
+      localStorage.setItem(
+        "access_token",
+        JSON.stringify(response.data.access)
+      );
+      localStorage.setItem(
+        "refresh_token",
+        JSON.stringify(response.data.refresh)
+      );
+      authDispatch({ type: "refresh", payload: response.data });
+    }
 
     return config;
   });
