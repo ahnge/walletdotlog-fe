@@ -4,7 +4,7 @@ import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div data-theme="autumn">
+    <div data-theme="cupcake">
       <Nav />
       <Outlet />
       <Footer />

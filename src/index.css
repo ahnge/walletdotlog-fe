@@ -3,3 +3,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+/**
+  * Traditional
+  *
+  * @author jh3y
+*/
+.traditional:before {
+  -webkit-animation: spin 0.5s infinite linear;
+  animation: spin 0.5s infinite linear;
+  border-radius: 100%;
+  -webkit-box-shadow: inset -2px 0 0 0px purple;
+  box-shadow: inset -2px 0 0 0px purple;
+  content: "";
+  height: 40px;
+  position: absolute;
+  width: 40px;
+}

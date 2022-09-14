@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import LoginForm from "../components/loginPage/LoginForm";
+import Login from "../components/loginPage/Login";
 import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
@@ -9,7 +9,7 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center">
       {authState.user && <Navigate to="/" />}
-      <LoginForm />
+      <Login />
     </div>
   );
 };

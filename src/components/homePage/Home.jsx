@@ -9,7 +9,7 @@ const Home = () => {
       <div className="flex px-8 flex-col justify-center items-center min-h-screen">
         {authState.user ? (
           <h1 className=" text-5xl text-center font-extrabold py-2">
-            WELCOME USER {authState.user.user_id}
+            WELCOME {authState.user.full_name}
           </h1>
         ) : (
           <h1 className=" text-5xl text-center font-extrabold py-2">WELCOME</h1>
