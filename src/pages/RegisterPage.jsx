@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 const RegisterPage = () => {
   const { authState } = useAuth();
   return (
-    <div className="min-h-screen flex items-center">
+    <div className="min-h-screen flex items-center px-8 py-20 sm:py-0">
       {authState.user && <Navigate to="/" />}
       <Register />
     </div>

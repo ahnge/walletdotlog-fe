@@ -3,7 +3,7 @@ import Home from "../components/homePage/Home";
 
 const HomePage = () => {
   return (
-    <div className="font-inter">
+    <div className="font-inter px-8">
       <Home />
     </div>
   );

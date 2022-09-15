@@ -7,7 +7,7 @@ const LoginPage = () => {
   const { authState } = useAuth();
 
   return (
-    <div className="min-h-screen flex items-center">
+    <div className="min-h-screen flex items-center px-8">
       {authState.user && <Navigate to="/" />}
       <Login />
     </div>

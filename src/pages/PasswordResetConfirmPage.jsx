@@ -3,7 +3,7 @@ import PasswordResetConfirm from "../components/passwordResetConfirmPage/Passwor
 
 const PasswordResetConfirmPage = () => {
   return (
-    <div className="min-h-screen flex items-center">
+    <div className="min-h-screen flex items-center px-8">
       <PasswordResetConfirm />
     </div>
   );
