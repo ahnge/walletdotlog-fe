@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import Alert from "../Alert";
@@ -9,18 +9,20 @@ export function Loginform({ loadingExchangeToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
   const [fieldErr, setFieldErr] = useState([]);
+  const [serverErr, setServerErr] = useState(false);
 
   // auth state
   const { authDispatch } = useAuth();
-
-  // react-router-dom
-  const navigate = useNavigate();
 
   // functions
   const handleSubmit = (e) => {
     e.preventDefault();
     const getTokens = async () => {
+      setLoading(true);
       const res = await axios.post(
         "http://127.0.0.1:8000/dj-rest-auth/login/",
         {
@@ -29,16 +31,20 @@ export function Loginform({ loadingExchangeToken }) {
         }
       );
       console.log(res);
-      authDispatch({ type: "setInfos", payload: res.data });
-      localStorage.setItem(
-        "access_token",
-        JSON.stringify(res.data.access_token)
-      );
-      localStorage.setItem(
-        "refresh_token",
-        JSON.stringify(res.data.refresh_token)
-      );
-      navigate("/");
+      setSuccess(true);
+      setTimeout(() => {
+        setLoading(false);
+        authDispatch({ type: "setInfos", payload: res.data });
+        localStorage.setItem(
+          "access_token",
+          JSON.stringify(res.data.access_token)
+        );
+        localStorage.setItem(
+          "refresh_token",
+          JSON.stringify(res.data.refresh_token)
+        );
+        setSuccess(false);
+      }, 2000);
     };
 
     getTokens().catch((err) => {
@@ -46,6 +52,10 @@ export function Loginform({ loadingExchangeToken }) {
       if (err.response.data.non_field_errors) {
         setFieldErr(err.response.data.non_field_errors);
         setTimeout(() => setFieldErr([]), 3800);
+      }
+      if (err.response.status === 500) {
+        setServerErr(true);
+        setTimeout(() => setServerErr([]), 3800);
       }
     });
 
@@ -57,8 +67,14 @@ export function Loginform({ loadingExchangeToken }) {
     <>
       <div className="fixed top-20 right-10 w-fit transition duration-500 flex flex-col space-y-3">
         {fieldErr?.map((t, index) => {
-          return <Alert text={t} type="warning" key={index} />;
+          return <Alert text={t} type="error" key={index} />;
         })}
+        {success && (
+          <Alert text="Login success! Redirecting..." type="success" />
+        )}
+        {serverErr && (
+          <Alert text="Internal server error! Try later..." type="error" />
+        )}
       </div>
       <form onSubmit={handleSubmit}>
         <div className="w-full mt-4">
@@ -94,13 +110,15 @@ export function Loginform({ loadingExchangeToken }) {
           </Link>
 
           <div className="flex">
-            {loadingExchangeToken && (
+            {loadingExchangeToken || loading ? (
               <div className="traditional mt-1 mr-14"></div>
-            )}
+            ) : null}
             <input
               type="submit"
               value="Login"
-              className={`btn ${loadingExchangeToken ? "btn-disabled" : ""}`}
+              className={`btn ${
+                loadingExchangeToken || loading ? "btn-disabled" : ""
+              }`}
             />
           </div>
         </div>
