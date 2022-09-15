@@ -73,29 +73,33 @@ function Login() {
         ) : null}
       </div>
 
-      <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
+      <div className="w-full max-w-sm mx-auto mt-10 sm:mt-0 overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
         <div className="px-6 py-9">
-          <h3 className="mt-1 text-3xl font-bold text-center text-gray-600 dark:text-gray-200">
+          <h3 className="mt-1 text-2xl sm:text-3xl font-bold text-center text-gray-600 dark:text-gray-200">
             Login
           </h3>
 
           {/* Social */}
           <div className="flex flex-col space-y-3 mt-5">
             <a
-              className="btn w-full bg-white flex justify-start"
+              className="btn w-full bg-white flex justify-center xs:justify-start"
               href={googleUrl}
               target="_self"
             >
               <Google />
-              <span className=" ml-5">Continue with Google</span>
+              <span className=" ml-3 sm:ml-5 hidden xs:inline">
+                Continue with Google
+              </span>
             </a>
             <a
-              className="btn w-full bg-white flex justify-start"
+              className="btn w-full bg-white flex justify-center xs:justify-start"
               href={githubUrl}
               target="_self"
             >
               <Github />
-              <span className=" ml-5">Continue with Github</span>
+              <span className=" ml-3 sm:ml-5 hidden xs:inline">
+                Continue with Github
+              </span>
             </a>
           </div>
 

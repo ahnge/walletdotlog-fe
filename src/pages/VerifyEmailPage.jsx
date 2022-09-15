@@ -3,7 +3,7 @@ import VerifyEmail from "../components/VerifyEmailPage/VerifyEmail";
 
 const VerifyEmailPage = () => {
   return (
-    <div className="min-h-screen flex items-center">
+    <div className="min-h-screen flex items-center px-8">
       <VerifyEmail />
     </div>
   );
