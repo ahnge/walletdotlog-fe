@@ -6,6 +6,7 @@ import Alert from "../Alert";
 const ForgotPass = () => {
   // local states
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [success, setSuccess] = useState("");
   const [err, setErr] = useState([]);
@@ -14,11 +15,13 @@ const ForgotPass = () => {
   const handleClick = (e) => {
     e.preventDefault();
     const getInstructinos = async () => {
+      setLoading(true);
       const res = await axios.post(
         "http://localhost:8000/dj-rest-auth/password/reset/",
         { email }
       );
       console.log(res);
+      setLoading(false);
       setEmail("");
       if (res.data.detail) {
         setSuccess(res.data.detail);
@@ -64,11 +67,14 @@ const ForgotPass = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </label>
-            <input
-              type="submit"
-              className="btn mt-5 w-fit"
-              value="Send me instructions"
-            />
+            <div className="flex justify-start">
+              <input
+                type="submit"
+                className={`btn mt-5 w-fit ${loading ? "btn-disabled" : ""}`}
+                value="Send me instructions"
+              />
+              {loading && <span className="traditional ml-5 mt-5"></span>}
+            </div>
           </form>
         </div>
       </div>
