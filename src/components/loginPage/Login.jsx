@@ -10,6 +10,7 @@ import Alert from "../Alert";
 function Login() {
   // local states
   const [fieldErr, setFieldErr] = useState([]);
+  const [serverErr, setServerErr] = useState(false);
   const [loadingExchangeToken, setLoadingExchangeToken] = useState(false);
   const [successExchange, setSuccessExchange] = useState(false);
 
@@ -57,6 +58,10 @@ function Login() {
           setFieldErr(err.response.data.non_field_errors);
           setTimeout(() => setFieldErr([]), 4000);
         }
+        if (err.response.status === 500) {
+          setServerErr(true);
+          setTimeout(() => setServerErr(false), 4000);
+        }
       });
     }
   }, []);
@@ -70,6 +75,9 @@ function Login() {
         })}
         {successExchange ? (
           <Alert text="Login success! Redirecting..." type="success" />
+        ) : null}
+        {serverErr ? (
+          <Alert text="Internal server error! Try later.." type="error" />
         ) : null}
       </div>
 
