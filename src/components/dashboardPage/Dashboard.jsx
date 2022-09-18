@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
-import Logo from "../svgs/Logo";
 import useAxios from "../../utils/useAxios";
-import { FourDots, Hamburger, LogoutIcon } from "../svgs/DashboardIcons";
+import { Hamburger } from "../svgs/DashboardIcons";
+import AddLogForm from "./AddLogForm";
+import AddWalletForm from "./AddWalletForm";
 import Aside from "./Aside";
+import SubstractLogForm from "./SubstractLogForm";
 import Table from "./Table";
 
 const Dashboard = () => {
   // local states
   const [sideBarOpen, setSideBarOpen] = useState(false);
+  const [walletFormOpen, setWalletFormOpen] = useState(false);
+  const [pulsLogFormOpen, setPlusLogFormOpen] = useState(false);
+  const [minusLogFormOpen, setMinusLogFormOpen] = useState(false);
 
   // intercepted axios
   const ai = useAxios();
@@ -19,7 +22,7 @@ const Dashboard = () => {
       const res = await ai.get("/api/wallet/list-create/");
       console.log(res);
     };
-    // getWallets();
+    getWallets();
   }, []);
 
   return (
@@ -53,8 +56,18 @@ const Dashboard = () => {
                     <div className="stat-title">Current balance</div>
                     <div className="stat-value">$89,400</div>
                     <div className="mt-5 flex justify-start space-x-3">
-                      <button className="btn btn-circle text-2xl">+</button>
-                      <button className="btn btn-circle text-2xl">-</button>
+                      <button
+                        className="btn btn-circle text-2xl"
+                        onClick={() => setPlusLogFormOpen((p) => !p)}
+                      >
+                        +
+                      </button>
+                      <button
+                        className="btn btn-circle text-2xl"
+                        onClick={() => setMinusLogFormOpen((p) => !p)}
+                      >
+                        -
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -62,7 +75,12 @@ const Dashboard = () => {
 
               {/* Button group */}
               <div className="mt-8 space-y-3">
-                <button className="btn">Add wallet</button>
+                <button
+                  className="btn"
+                  onClick={() => setWalletFormOpen((p) => !p)}
+                >
+                  Add wallet
+                </button>
                 <div className="form-control">
                   <div className="input-group">
                     <select className="select select-bordered">
@@ -81,6 +99,18 @@ const Dashboard = () => {
             <Table />
           </div>
         </div>
+
+        {walletFormOpen && (
+          <AddWalletForm setWalletFormOpen={setWalletFormOpen} />
+        )}
+
+        {pulsLogFormOpen && (
+          <AddLogForm setPlusLogFormOpen={setPlusLogFormOpen} />
+        )}
+
+        {minusLogFormOpen && (
+          <SubstractLogForm setMinusLogFormOpen={setMinusLogFormOpen} />
+        )}
       </div>
     </>
   );
