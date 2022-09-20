@@ -5,30 +5,9 @@ import useAxios from "../../utils/useAxios";
 import Logo from "../svgs/Logo";
 import { FourDots, LogoutIcon } from "../svgs/DashboardIcons";
 
-const Aside = ({ sideBarOpen, setSideBarOpen }) => {
+const Aside = ({ sideBarOpen, setSideBarOpen, handleLogout }) => {
   // auth state
-  const { authState, authDispatch } = useAuth();
-
-  // navigate
-  const navigate = useNavigate();
-
-  // intercepted axios
-  const ai = useAxios();
-
-  // functions
-  const handleLogout = () => {
-    const blacklistToken = async () => {
-      const res = await ai.post("/dj-rest-auth/logout/", {
-        refresh: authState.refresh_token,
-      });
-      console.log(res);
-      authDispatch({ type: "logout" });
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      navigate("/");
-    };
-    blacklistToken().catch((err) => console.log(err));
-  };
+  const { authState } = useAuth();
 
   return (
     <aside
