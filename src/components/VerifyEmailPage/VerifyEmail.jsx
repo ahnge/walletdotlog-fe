@@ -43,7 +43,7 @@ const VerifyEmail = () => {
   };
   return (
     <>
-      <div className="fixed top-20 right-10 w-fit transition duration-500 flex flex-col space-y-3">
+      <div className="fixed z-50 top-20 right-10 w-fit transition duration-500 flex flex-col space-y-3">
         {err ? (
           <Alert text="something went wrong! Redirecting" type="error" />
         ) : null}

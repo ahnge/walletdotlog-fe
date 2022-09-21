@@ -4,7 +4,7 @@ import { Error, Info, Success, Warning } from "./svgs/Alerts";
 const Alert = ({ text, type }) => {
   return (
     <div
-      className={`alert shadow-lg ${
+      className={`alert shadow-lg z-50 ${
         type === "error"
           ? "alert-error"
           : type === "warning"

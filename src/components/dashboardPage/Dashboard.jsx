@@ -29,9 +29,10 @@ const Dashboard = () => {
   const [substractLogSuccess, setSubstractLogSuccess] = useState(false);
   const [addLogErr, setAddLogErr] = useState(false);
   const [substractLogErr, setSubstractLogErr] = useState(false);
+  const [insufficientErr, setInsufficientErr] = useState(false);
 
   // auth state
-  const { authState, authDispatch } = useAuth();
+  const { authDispatch } = useAuth();
 
   // navigate
   const navigate = useNavigate();
@@ -71,7 +72,7 @@ const Dashboard = () => {
   };
 
   const getLogs = async (id) => {
-    const res = await ai.get(`/api/wallet/${id}/log/list-create/`);
+    const res = await ai.get(`/api/wallet/${id}/log/list/latest/`);
     console.log("getLogs success");
     console.log(`walletId: ${id} logs`, res);
     setLogs(res.data);
@@ -93,7 +94,7 @@ const Dashboard = () => {
   return (
     <>
       {/* Alert */}
-      <div className="fixed top-20 right-10 w-fit transition duration-500 flex flex-col space-y-3">
+      <div className="fixed top-20 right-10 w-fit z-50 transition duration-500 flex flex-col space-y-3">
         {addWalletSuccess && (
           <Alert text="Add wallet success!" type="success" />
         )}
@@ -104,6 +105,12 @@ const Dashboard = () => {
         {substractLogSuccess && (
           <Alert text="Substract log success!" type="success" />
         )}
+        {insufficientErr && (
+          <Alert
+            text="You can't substract more than what you have!!"
+            type="warning"
+          />
+        )}
       </div>
 
       <Aside
@@ -111,9 +118,9 @@ const Dashboard = () => {
         setSideBarOpen={setSideBarOpen}
         handleLogout={handleLogout}
       />
-      <div className="ml-auto h-screen lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
+      <div className="ml-auto min-h-screen lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
         {/* Top bar */}
-        <div className="sticky top-0 h-16 border-b bg-white lg:py-2.5">
+        <div className="sticky z-10 top-0 h-16 border-b bg-white lg:py-2.5">
           <div className="px-6 flex items-center justify-between space-x-4 2xl:container">
             <h5 hidden className="text-2xl text-gray-600 font-medium lg:block">
               Dashboard
@@ -129,7 +136,7 @@ const Dashboard = () => {
 
         {/* Main */}
         <div className="px-6 pt-6 2xl:container">
-          <div className="flex justify-start flex-col h-[80vh] border-gray-300 rounded-xl">
+          <div className="flex justify-start flex-col min-h-[80vh] border-gray-300 rounded-xl">
             <div className="flex flex-col md:flex-row md:space-x-10">
               {/* Card */}
               {wallets.length > 0 ? (
@@ -139,7 +146,7 @@ const Dashboard = () => {
                     <div className="stat">
                       <div className="stat-title">Current balance</div>
                       <div className="stat-value">
-                        Ks {currentWallet.amount.toLocaleString()}
+                        Ks {currentWallet.amount}
                       </div>
                       <div className="mt-5 flex justify-start space-x-3">
                         <button
@@ -149,7 +156,9 @@ const Dashboard = () => {
                           +
                         </button>
                         <button
-                          className="btn btn-circle text-2xl"
+                          className={`btn btn-circle text-2xl ${
+                            currentWallet.amount === 0 ? " btn-disabled" : ""
+                          }`}
                           onClick={() => setMinusLogFormOpen((p) => !p)}
                         >
                           -
@@ -209,6 +218,7 @@ const Dashboard = () => {
             setAddLogSuccess={setAddLogSuccess}
             setAddLogErr={setAddLogErr}
             currentWallet={currentWallet}
+            setCurrentWallet={setCurrentWallet}
             getLogs={getLogs}
           />
         )}
@@ -217,9 +227,11 @@ const Dashboard = () => {
           <SubstractLogForm
             setMinusLogFormOpen={setMinusLogFormOpen}
             setSubstractLogSuccess={setSubstractLogSuccess}
-            setSubstractLogErr={setSubstractLogSuccess}
+            setSubstractLogErr={setSubstractLogErr}
             currentWallet={currentWallet}
+            setCurrentWallet={setCurrentWallet}
             getLogs={getLogs}
+            setInsufficientErr={setInsufficientErr}
           />
         )}
       </div>
