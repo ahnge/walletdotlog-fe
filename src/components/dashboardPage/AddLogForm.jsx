@@ -6,6 +6,7 @@ const AddLogForm = ({
   setAddLogSuccess,
   setAddLogErr,
   currentWallet,
+  setCurrentWallet,
   getLogs,
 }) => {
   // local states
@@ -27,6 +28,10 @@ const AddLogForm = ({
         data
       );
       console.log("addLog success", res);
+      const newAmount = currentWallet.amount + parseInt(amount);
+      setCurrentWallet((p) => {
+        return { ...p, amount: newAmount };
+      });
       setLoading(false);
       setAddLogSuccess(true);
       getLogs(currentWallet.id).catch((err) => console.log("getLogs err", err));

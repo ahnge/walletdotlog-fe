@@ -39,7 +39,7 @@ const ForgotPass = () => {
   };
   return (
     <>
-      <div className=" fixed top-20 right-10 w-fit transition duration-500 flex flex-col space-y-3">
+      <div className=" fixed top-20 right-10 z-50 w-fit transition duration-500 flex flex-col space-y-3">
         {success ? <Alert text={success} type="success" /> : null}
         {err?.map((t, index) => {
           return <Alert text={t} type="warning" key={index} />;

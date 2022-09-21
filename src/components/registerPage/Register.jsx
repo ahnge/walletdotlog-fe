@@ -105,7 +105,7 @@ function Register() {
   return (
     <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
       {/* Alerts */}
-      <div className="fixed top-20 right-10 w-fit transition duration-500 flex flex-col space-y-3">
+      <div className="fixed top-20 right-10 z-50 w-fit transition duration-500 flex flex-col space-y-3">
         {emailErr?.map((t, index) => {
           return <Alert text={t} type="error" key={index} />;
         })}

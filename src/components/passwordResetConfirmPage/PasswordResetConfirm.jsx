@@ -67,7 +67,7 @@ const PasswordResetConfirm = () => {
   return (
     <>
       {/* Alerts */}
-      <div className="fixed top-20 right-10 w-fit transition duration-500 flex flex-col space-y-3">
+      <div className="fixed top-20 z-50 right-10 w-fit transition duration-500 flex flex-col space-y-3">
         {passErr?.map((t, index) => {
           return <Alert text={t} type="error" key={index} />;
         })}

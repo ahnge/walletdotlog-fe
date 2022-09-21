@@ -7,6 +7,8 @@ const SubstractLogForm = ({
   setSubstractLogErr,
   getLogs,
   currentWallet,
+  setCurrentWallet,
+  setInsufficientErr,
 }) => {
   // local states
   const [amount, setAmount] = useState();
@@ -16,6 +18,25 @@ const SubstractLogForm = ({
 
   // intercepted axios
   const ai = useAxios();
+
+  const updateCurrentWallet = () => {
+    const init_amount = currentWallet.amount;
+    const entry_amount = parseInt(amount);
+    let newAmount;
+    if (init_amount > entry_amount) {
+      newAmount = currentWallet.amount - parseInt(amount);
+    } else {
+      setInsufficientErr(true);
+      setTimeout(() => {
+        setInsufficientErr(false);
+      }, 3000);
+      newAmount = 0;
+    }
+
+    setCurrentWallet((p) => {
+      return { ...p, amount: newAmount };
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,6 +48,7 @@ const SubstractLogForm = ({
         data
       );
       console.log("addLog success", res);
+      updateCurrentWallet();
       setLoading(false);
       setSubstractLogSuccess(true);
       getLogs(currentWallet.id).catch((err) => console.log("getLogs err", err));
@@ -54,7 +76,7 @@ const SubstractLogForm = ({
             <input
               type="number"
               className="input input-bordered w-full input-primary text-black"
-              placeholder="Initial amount"
+              placeholder="Amount"
               min="1"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
@@ -72,7 +94,7 @@ const SubstractLogForm = ({
               type="submit"
               className={`btn btn-primary ${loading ? "loading" : ""}`}
             >
-              Add
+              Substract
             </button>
           </form>
         </div>
