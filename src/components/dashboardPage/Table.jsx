@@ -1,6 +1,7 @@
 import React from "react";
+import LoadingTable from "./LoadingTable";
 
-const Table = ({ logs }) => {
+const Table = ({ logs, loadingLogs }) => {
   return (
     <div className="overflow-x-auto mt-10 min-h-fit pb-20">
       <h2 className=" text-2xl font-bold py-5">Latest logs</h2>
@@ -35,7 +36,13 @@ const Table = ({ logs }) => {
           </tbody>
         </table>
       ) : (
-        <div>There is no logs in this wallet.</div>
+        <div>
+          {loadingLogs ? (
+            <LoadingTable />
+          ) : (
+            <div>There is no logs in this wallet.</div>
+          )}
+        </div>
       )}
     </div>
   );

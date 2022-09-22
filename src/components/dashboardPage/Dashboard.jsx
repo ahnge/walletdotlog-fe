@@ -22,6 +22,9 @@ const Dashboard = () => {
   const [logs, setLogs] = useState([]);
   const [currentWallet, setCurrentWallet] = useState(null);
 
+  const [loadingWallets, setLoadingWallets] = useState(false);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+
   // local states -- alert
   const [addWalletSuccess, setAddWalletSuccess] = useState(false);
   const [addWalletErr, setAddWalletErr] = useState(false);
@@ -62,9 +65,11 @@ const Dashboard = () => {
   };
 
   const getWallets = async () => {
+    setLoadingWallets(true);
     const res = await ai.get("/api/wallet/list-create/");
     console.log("getWallets success", res);
     setWallets(res.data);
+    setLoadingWallets(false);
     if (res.data.length > 0 && !currentWallet) {
       setCurrentWallet(res.data[0]);
       getLogs(res.data[0].id).catch((err) => console.error("getLogsErr", err));
@@ -72,10 +77,12 @@ const Dashboard = () => {
   };
 
   const getLogs = async (id) => {
+    setLoadingLogs(true);
     const res = await ai.get(`/api/wallet/${id}/log/list/latest/`);
     console.log("getLogs success");
     console.log(`walletId: ${id} logs`, res);
     setLogs(res.data);
+    setLoadingLogs(false);
   };
 
   useEffect(() => {
@@ -169,16 +176,44 @@ const Dashboard = () => {
                 </div>
               ) : (
                 <div className="card w-full max-w-sm h-fit bg-white shadow-xl">
-                  <div className="card-body">
-                    <h2 className="font-bold text-2xl">You have no wallet.</h2>
-                  </div>
+                  {loadingWallets ? (
+                    <div className="card-body animate-pulse">
+                      <h2 className="font-bold text-2xl bg-slate-200 text-slate-200 w-fit">
+                        Name
+                      </h2>
+                      <div className="stat">
+                        <div className="stat-title bg-slate-200 text-slate-200 w-fit">
+                          current balance
+                        </div>
+                        <div className="stat-value bg-slate-200 text-slate-200 mt-3">
+                          Ks 000
+                        </div>
+                        <div className="mt-5 flex justify-start space-x-3">
+                          <button className="btn-circle bg-slate-200 text-slate-200">
+                            +
+                          </button>
+                          <button className="btn-circle bg-slate-200 text-slate-200">
+                            -
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="card-body">
+                      <h2 className="font-bold text-2xl">
+                        You have no wallet.
+                      </h2>
+                    </div>
+                  )}
                 </div>
               )}
 
               {/* Button group */}
               <div className="mt-8 space-y-3 flex flex-col">
                 <button
-                  className="btn w-fit"
+                  className={`btn w-fit ${
+                    loadingWallets ? " btn-disabled" : ""
+                  }`}
                   onClick={() => setWalletFormOpen((p) => !p)}
                 >
                   Add wallet
@@ -198,7 +233,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <Table logs={logs} />
+            <Table logs={logs} loadingLogs={loadingLogs} />
           </div>
         </div>
 
