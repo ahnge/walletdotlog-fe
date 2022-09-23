@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useWallet } from "../../context/WalletContext";
 import useAxios from "../../utils/useAxios";
 
 const SubstractLogForm = ({
@@ -6,8 +7,6 @@ const SubstractLogForm = ({
   setSubstractLogSuccess,
   setSubstractLogErr,
   getLogs,
-  currentWallet,
-  setCurrentWallet,
   setInsufficientErr,
 }) => {
   // local states
@@ -16,15 +15,18 @@ const SubstractLogForm = ({
 
   const [loading, setLoading] = useState(false);
 
+  // wallet State
+  const { walletState, walletDispatch } = useWallet();
+
   // intercepted axios
   const ai = useAxios();
 
   const updateCurrentWallet = () => {
-    const init_amount = currentWallet.amount;
+    const init_amount = walletState.currentWallet.amount;
     const entry_amount = parseInt(amount);
     let newAmount;
     if (init_amount > entry_amount) {
-      newAmount = currentWallet.amount - parseInt(amount);
+      newAmount = walletState.currentWallet.amount - parseInt(amount);
     } else {
       setInsufficientErr(true);
       setTimeout(() => {
@@ -33,9 +35,7 @@ const SubstractLogForm = ({
       newAmount = 0;
     }
 
-    setCurrentWallet((p) => {
-      return { ...p, amount: newAmount };
-    });
+    walletDispatch({ type: "setNewAmount", payload: newAmount });
   };
 
   const handleSubmit = (e) => {
@@ -44,14 +44,16 @@ const SubstractLogForm = ({
       const data = { amount, description, log_type: "n" };
       setLoading(true);
       const res = await ai.post(
-        `/api/wallet/${currentWallet.id}/log/list-create/`,
+        `/api/wallet/${walletState.currentWallet.id}/log/list-create/`,
         data
       );
       console.log("addLog success", res);
       updateCurrentWallet();
       setLoading(false);
       setSubstractLogSuccess(true);
-      getLogs(currentWallet.id).catch((err) => console.log("getLogs err", err));
+      getLogs(walletState.currentWallet.id).catch((err) =>
+        console.log("getLogs err", err)
+      );
       setTimeout(() => setSubstractLogSuccess(false), 3000);
       setMinusLogFormOpen((p) => !p);
     };
