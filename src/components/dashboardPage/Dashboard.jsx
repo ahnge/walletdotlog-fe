@@ -4,23 +4,22 @@ import { Hamburger } from "../svgs/DashboardIcons";
 import { useNavigate } from "react-router-dom";
 import AddLogForm from "./AddLogForm";
 import AddWalletForm from "./AddWalletForm";
-import Aside from "./Aside";
 import SubstractLogForm from "./SubstractLogForm";
 import Table from "./Table";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import Alert from "../Alert";
+import { useSideBar } from "../../context/SidebarContext";
+import { useWallet } from "../../context/WalletContext";
 
 const Dashboard = () => {
   // local states
-  const [sideBarOpen, setSideBarOpen] = useState(false);
   const [walletFormOpen, setWalletFormOpen] = useState(false);
   const [pulsLogFormOpen, setPlusLogFormOpen] = useState(false);
   const [minusLogFormOpen, setMinusLogFormOpen] = useState(false);
 
   const [wallets, setWallets] = useState([]);
   const [logs, setLogs] = useState([]);
-  const [currentWallet, setCurrentWallet] = useState(null);
 
   const [loadingWallets, setLoadingWallets] = useState(false);
   const [loadingLogs, setLoadingLogs] = useState(false);
@@ -36,6 +35,10 @@ const Dashboard = () => {
 
   // auth state
   const { authDispatch } = useAuth();
+  // sideBar state
+  const { sideBarDispatch } = useSideBar();
+  // wallet state
+  const { walletState, walletDispatch } = useWallet();
 
   // navigate
   const navigate = useNavigate();
@@ -61,7 +64,7 @@ const Dashboard = () => {
   const handleChange = (e) => {
     console.log("hi", e.target.value);
     const newW = wallets.filter((w) => w.name === e.target.value);
-    setCurrentWallet(newW[0]);
+    walletDispatch({ type: "setCurrentWallet", payload: newW[0] });
   };
 
   const getWallets = async () => {
@@ -70,8 +73,8 @@ const Dashboard = () => {
     console.log("getWallets success", res);
     setWallets(res.data);
     setLoadingWallets(false);
-    if (res.data.length > 0 && !currentWallet) {
-      setCurrentWallet(res.data[0]);
+    if (res.data.length > 0 && !walletState.currentWallet) {
+      walletDispatch({ type: "setCurrentWallet", payload: res.data[0] });
       getLogs(res.data[0].id).catch((err) => console.error("getLogsErr", err));
     }
   };
@@ -93,10 +96,10 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (currentWallet) {
-      getLogs(currentWallet.id);
+    if (walletState.currentWallet) {
+      getLogs(walletState.currentWallet.id);
     }
-  }, [currentWallet]);
+  }, [walletState.currentWallet]);
 
   return (
     <>
@@ -120,11 +123,6 @@ const Dashboard = () => {
         )}
       </div>
 
-      <Aside
-        sideBarOpen={sideBarOpen}
-        setSideBarOpen={setSideBarOpen}
-        handleLogout={handleLogout}
-      />
       <div className="ml-auto min-h-screen lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
         {/* Top bar */}
         <div className="sticky z-10 top-0 h-16 border-b bg-white lg:py-2.5">
@@ -134,7 +132,7 @@ const Dashboard = () => {
             </h5>
             <button
               className="w-12 h-16 -mr-2 border-r lg:hidden"
-              onClick={() => setSideBarOpen((p) => !p)}
+              onClick={() => sideBarDispatch({ type: "toggle" })}
             >
               <Hamburger />
             </button>
@@ -149,11 +147,13 @@ const Dashboard = () => {
               {wallets.length > 0 ? (
                 <div className="card w-full max-w-sm h-fit bg-white shadow-xl">
                   <div className="card-body">
-                    <h2 className="font-bold text-2xl">{currentWallet.name}</h2>
+                    <h2 className="font-bold text-2xl">
+                      {walletState.currentWallet.name}
+                    </h2>
                     <div className="stat">
                       <div className="stat-title">Current balance</div>
                       <div className="stat-value">
-                        Ks {currentWallet.amount}
+                        Ks {walletState.currentWallet.amount}
                       </div>
                       <div className="mt-5 flex justify-start space-x-3">
                         <button
@@ -164,7 +164,9 @@ const Dashboard = () => {
                         </button>
                         <button
                           className={`btn btn-circle text-2xl ${
-                            currentWallet.amount === 0 ? " btn-disabled" : ""
+                            walletState.currentWallet.amount === 0
+                              ? " btn-disabled"
+                              : ""
                           }`}
                           onClick={() => setMinusLogFormOpen((p) => !p)}
                         >
@@ -252,8 +254,6 @@ const Dashboard = () => {
             setPlusLogFormOpen={setPlusLogFormOpen}
             setAddLogSuccess={setAddLogSuccess}
             setAddLogErr={setAddLogErr}
-            currentWallet={currentWallet}
-            setCurrentWallet={setCurrentWallet}
             getLogs={getLogs}
           />
         )}
@@ -263,8 +263,6 @@ const Dashboard = () => {
             setMinusLogFormOpen={setMinusLogFormOpen}
             setSubstractLogSuccess={setSubstractLogSuccess}
             setSubstractLogErr={setSubstractLogErr}
-            currentWallet={currentWallet}
-            setCurrentWallet={setCurrentWallet}
             getLogs={getLogs}
             setInsufficientErr={setInsufficientErr}
           />

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
+import { useWallet } from "../../context/WalletContext";
 import useAxios from "../../utils/useAxios";
 
 const AddLogForm = ({
   setPlusLogFormOpen,
   setAddLogSuccess,
   setAddLogErr,
-  currentWallet,
-  setCurrentWallet,
   getLogs,
 }) => {
   // local states
@@ -14,6 +13,8 @@ const AddLogForm = ({
   const [description, setDescription] = useState();
 
   const [loading, setLoading] = useState(false);
+
+  const { walletState, walletDispatch } = useWallet();
 
   // intercepted axios
   const ai = useAxios();
@@ -24,17 +25,17 @@ const AddLogForm = ({
       const data = { amount, description, log_type: "p" };
       setLoading(true);
       const res = await ai.post(
-        `/api/wallet/${currentWallet.id}/log/list-create/`,
+        `/api/wallet/${walletState.currentWallet.id}/log/list-create/`,
         data
       );
       console.log("addLog success", res);
-      const newAmount = currentWallet.amount + parseInt(amount);
-      setCurrentWallet((p) => {
-        return { ...p, amount: newAmount };
-      });
+      const newAmount = walletState.currentWallet.amount + parseInt(amount);
+      walletDispatch({ type: "setNewAmount", payload: newAmount });
       setLoading(false);
       setAddLogSuccess(true);
-      getLogs(currentWallet.id).catch((err) => console.log("getLogs err", err));
+      getLogs(walletState.currentWallet.id).catch((err) =>
+        console.log("getLogs err", err)
+      );
       setTimeout(() => setAddLogSuccess(false), 3000);
       setPlusLogFormOpen((p) => !p);
     };
