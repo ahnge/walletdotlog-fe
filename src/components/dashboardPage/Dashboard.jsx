@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import useAxios from "../../utils/useAxios";
 import { Hamburger } from "../svgs/DashboardIcons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import AddLogForm from "./AddLogForm";
 import AddWalletForm from "./AddWalletForm";
 import SubstractLogForm from "./SubstractLogForm";
-import Table from "./Table";
+import Table from "../Table";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import Alert from "../Alert";
@@ -18,11 +18,10 @@ const Dashboard = () => {
   const [pulsLogFormOpen, setPlusLogFormOpen] = useState(false);
   const [minusLogFormOpen, setMinusLogFormOpen] = useState(false);
 
-  const [wallets, setWallets] = useState([]);
   const [logs, setLogs] = useState([]);
 
   const [loadingWallets, setLoadingWallets] = useState(false);
-  const [loadingLogs, setLoadingLogs] = useState(false);
+  const [loadingLogs, setLoadingLogs] = useState(true);
 
   // local states -- alert
   const [addWalletSuccess, setAddWalletSuccess] = useState(false);
@@ -63,7 +62,7 @@ const Dashboard = () => {
 
   const handleChange = (e) => {
     console.log("hi", e.target.value);
-    const newW = wallets.filter((w) => w.name === e.target.value);
+    const newW = walletState.wallets.filter((w) => w.name === e.target.value);
     walletDispatch({ type: "setCurrentWallet", payload: newW[0] });
   };
 
@@ -71,7 +70,7 @@ const Dashboard = () => {
     setLoadingWallets(true);
     const res = await ai.get("/api/wallet/list-create/");
     console.log("getWallets success", res);
-    setWallets(res.data);
+    walletDispatch({ type: "setWallets", payload: res.data });
     setLoadingWallets(false);
     if (res.data.length > 0 && !walletState.currentWallet) {
       walletDispatch({ type: "setCurrentWallet", payload: res.data[0] });
@@ -141,10 +140,10 @@ const Dashboard = () => {
 
         {/* Main */}
         <div className="px-6 pt-6 2xl:container">
-          <div className="flex justify-start flex-col min-h-[80vh] border-gray-300 rounded-xl">
+          <div className="flex justify-start py-10 flex-col min-h-[80vh] border-gray-300 rounded-xl">
             <div className="flex flex-col md:flex-row md:space-x-10">
               {/* Card */}
-              {wallets.length > 0 ? (
+              {walletState.wallets.length > 0 ? (
                 <div className="card w-full max-w-sm h-fit bg-white shadow-xl">
                   <div className="card-body">
                     <h2 className="font-bold text-2xl">
@@ -220,14 +219,14 @@ const Dashboard = () => {
                 >
                   Add wallet
                 </button>
-                {wallets.length > 1 && (
+                {walletState.wallets.length > 1 && (
                   <select
                     className="select select-secondary w-full max-w-md"
                     defaultValue="Change wallet"
                     onChange={handleChange}
                   >
                     <option disabled>Change wallet</option>
-                    {wallets.map((w, index) => {
+                    {walletState.wallets.map((w, index) => {
                       return <option key={index}>{w.name}</option>;
                     })}
                   </select>
@@ -235,7 +234,16 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <Table logs={logs} loadingLogs={loadingLogs} />
+            <Table
+              logs={logs}
+              loadingLogs={loadingLogs}
+              title="Latest logs"
+              loadingRows={8}
+            />
+
+            <Link to={"/dashboard/logs"} className="btn w-fit mt-10">
+              See more
+            </Link>
           </div>
         </div>
 

@@ -1,10 +1,11 @@
 import React from "react";
 import LoadingTable from "./LoadingTable";
+import { Down, Up } from "./svgs/DashboardIcons";
 
-const Table = ({ logs, loadingLogs }) => {
+const Table = ({ logs, loadingLogs, title, loadingRows }) => {
   return (
     <div className="overflow-x-auto mt-10 min-h-fit pb-20">
-      <h2 className=" text-2xl font-bold py-5">Latest logs</h2>
+      <h2 className=" text-2xl font-bold py-5">{title}</h2>
       {logs.length > 0 ? (
         <table className="table table-compact md:table-normal table-zebra w-full">
           {/* <!-- head --> */}
@@ -24,9 +25,10 @@ const Table = ({ logs, loadingLogs }) => {
                   <td
                     className={`${
                       log.log_type === "p" ? "text-success" : "text-error"
-                    }`}
+                    } flex space-x-3`}
                   >
-                    {log.amount}
+                    <span>{log.amount}</span>
+                    <span>{log.log_type === "p" ? <Up /> : <Down />}</span>
                   </td>
                   <td>{log.description}</td>
                   <td>{log.created_at}</td>
@@ -38,7 +40,7 @@ const Table = ({ logs, loadingLogs }) => {
       ) : (
         <div>
           {loadingLogs ? (
-            <LoadingTable />
+            <LoadingTable loadingRows={loadingRows} />
           ) : (
             <div>There is no logs in this wallet.</div>
           )}
