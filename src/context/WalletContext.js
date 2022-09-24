@@ -7,12 +7,20 @@ const walletReducer = (state, action) => {
   switch (action.type) {
     case "setCurrentWallet": {
       return {
+        ...state,
         currentWallet: action.payload,
       };
     }
     case "setNewAmount": {
       return {
+        ...state,
         currentWallet: { ...state.currentWallet, amount: action.payload },
+      };
+    }
+    case "setWallets": {
+      return {
+        ...state,
+        wallets: action.payload,
       };
     }
     default: {
@@ -26,6 +34,7 @@ export const WalletProvider = ({ children }) => {
   // init states
   let initState = {
     currentWallet: null,
+    wallets: [],
   };
   const [walletState, walletDispatch] = useReducer(walletReducer, initState);
 
