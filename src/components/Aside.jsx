@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "./svgs/Logo";
-import { FourDots, LogoutIcon } from "./svgs/DashboardIcons";
+import { FourDots, LogoutIcon, ReportIcon } from "./svgs/DashboardIcons";
 import { useSideBar } from "../context/SidebarContext";
 import axios from "axios";
 
@@ -32,7 +32,7 @@ const Aside = () => {
   // variables
   const navs = [
     { route: "/dashboard", name: "Dashboard", icon: <FourDots /> },
-    { route: "/dashboard/logs", name: "Logs", icon: <FourDots /> },
+    { route: "/dashboard/logs", name: "Logs", icon: <ReportIcon /> },
   ];
 
   return (

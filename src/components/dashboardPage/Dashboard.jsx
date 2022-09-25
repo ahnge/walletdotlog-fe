@@ -241,7 +241,7 @@ const Dashboard = () => {
               loadingRows={8}
             />
 
-            <Link to={"/dashboard/logs"} className="btn w-fit mt-10">
+            <Link to={"/dashboard/logs"} className="btn w-fit">
               See more
             </Link>
           </div>
