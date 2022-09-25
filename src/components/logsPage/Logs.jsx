@@ -6,6 +6,7 @@ import useAxios from "../../utils/useAxios";
 import { useNavigate } from "react-router-dom";
 import Table from "../Table";
 import Pagination from "../Pagination";
+import Search from "./Search";
 
 const Logs = () => {
   // local states
@@ -73,6 +74,12 @@ const Logs = () => {
           >
             <Hamburger />
           </button>
+          <Search
+            currentPage={currentPage}
+            setLogs={setLogs}
+            setLoadingLogs={setLoadingLogs}
+            setTotalCount={setTotalCount}
+          />
         </div>
       </div>
 
