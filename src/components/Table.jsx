@@ -4,7 +4,7 @@ import { Down, Up } from "./svgs/DashboardIcons";
 
 const Table = ({ logs, loadingLogs, title, loadingRows }) => {
   return (
-    <div className="overflow-x-auto mt-10 min-h-fit pb-20">
+    <div className="overflow-x-auto mt-10 min-h-fit mb-10">
       <h2 className=" text-2xl font-bold py-5">{title}</h2>
       {logs.length > 0 ? (
         <table className="table table-compact md:table-normal table-zebra w-full">

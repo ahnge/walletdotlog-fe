@@ -34,7 +34,9 @@ const Pagination = ({
     <ul className="btn-group mx-auto">
       {/* Left navigation arrow */}
       <li
-        className={`btn ${currentPage === 1 ? "btn-disabled" : ""}`}
+        className={`btn btn-sm sm:btn-md ${
+          currentPage === 1 ? "btn-disabled" : ""
+        }`}
         onClick={onPrevious}
       >
         «
@@ -43,7 +45,7 @@ const Pagination = ({
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === "DOTS") {
           return (
-            <li className="btn" key={i}>
+            <li className="btn btn-sm sm:btn-md " key={i}>
               &#8230;
             </li>
           );
@@ -52,7 +54,9 @@ const Pagination = ({
         // Render our Page Pills
         return (
           <li
-            className={`btn ${currentPage === pageNumber ? "btn-active" : ""}`}
+            className={`btn btn-sm sm:btn-md  ${
+              currentPage === pageNumber ? "btn-active" : ""
+            }`}
             key={i}
             onClick={() => onPageChange(pageNumber)}
           >
@@ -62,7 +66,9 @@ const Pagination = ({
       })}
       {/*  Right Navigation arrow */}
       <li
-        className={`btn ${currentPage === lastPage ? "btn-disabled" : ""}`}
+        className={`btn btn-sm sm:btn-md  ${
+          currentPage === lastPage ? "btn-disabled" : ""
+        }`}
         onClick={onNext}
       >
         »
