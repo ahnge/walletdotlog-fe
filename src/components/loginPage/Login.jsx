@@ -1,21 +1,45 @@
 import { Loginform } from "./Loginform";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Google from "../svgs/Google";
 import Github from "../svgs/Github";
 import { Link, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";
+import useAxios from "../../hooks/useAxios";
 import Alert from "../Alert";
 
 function Login() {
-  // local states
-  const [fieldErr, setFieldErr] = useState([]);
-  const [serverErr, setServerErr] = useState(false);
-  const [loadingExchangeToken, setLoadingExchangeToken] = useState(false);
-  const [successExchange, setSuccessExchange] = useState(false);
-
+  let [searchParams, setSearchParams] = useSearchParams();
   // authState
   const { authDispatch } = useAuth();
+
+  const axiosInstance = useAxios();
+
+  const {
+    mutate,
+    isLoading: loadingExchangeToken,
+    isError,
+    isSuccess,
+    error,
+  } = useMutation(
+    (state) =>
+      axiosInstance.post(`dj-rest-auth/${state}/`, {
+        code: searchParams.get("code"),
+      }),
+    {
+      onError: (error) => console.log("mutation err", error),
+      onSuccess: (data) => {
+        const access_token = data.data.access_token;
+        const refresh_token = data.data.refresh_token;
+        authDispatch({
+          type: "setInfos",
+          payload: { access_token, refresh_token },
+        });
+        localStorage.setItem("access_token", JSON.stringify(access_token));
+        localStorage.setItem("refresh_token", JSON.stringify(refresh_token));
+      },
+    }
+  );
 
   // variables
   const googleUrl =
@@ -24,45 +48,9 @@ function Login() {
     "https://github.com/login/oauth/authorize?redirect_uri=http://localhost:3000/login&client_id=99ac0be5f459199f2a82&scope=user&state=github";
 
   // useEffect
-  let [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     if (searchParams.get("code")) {
-      const postCode = async (state) => {
-        setLoadingExchangeToken(true);
-        const res = await axios.post(
-          `http://localhost:8000/dj-rest-auth/${state}/`,
-          {
-            code: searchParams.get("code"),
-          }
-        );
-        console.log(res);
-        setSuccessExchange(true);
-        setTimeout(() => {
-          authDispatch({ type: "setInfos", payload: res.data });
-          localStorage.setItem(
-            "access_token",
-            JSON.stringify(res.data.access_token)
-          );
-          localStorage.setItem(
-            "refresh_token",
-            JSON.stringify(res.data.refresh_token)
-          );
-          setSuccessExchange(false);
-        }, 3000);
-      };
-
-      postCode(searchParams.get("state")).catch((err) => {
-        console.log("postCodeErr", err);
-        setLoadingExchangeToken(false);
-        if (err.response.data.non_field_errors) {
-          setFieldErr(err.response.data.non_field_errors);
-          setTimeout(() => setFieldErr([]), 4000);
-        }
-        if (err.response.status === 500) {
-          setServerErr(true);
-          setTimeout(() => setServerErr(false), 4000);
-        }
-      });
+      mutate(searchParams.get("state"));
     }
   }, []);
 
@@ -70,15 +58,17 @@ function Login() {
     <>
       {/* Alert */}
       <div className="fixed top-20 right-10 z-50 w-fit transition duration-500 flex flex-col space-y-3">
-        {fieldErr?.map((t, index) => {
-          return <Alert text={t} type="error" key={index} />;
-        })}
-        {successExchange ? (
-          <Alert text="Login success! Redirecting..." type="success" />
-        ) : null}
-        {serverErr ? (
-          <Alert text="Internal server error! Try later.." type="error" />
-        ) : null}
+        {isError && (
+          <Alert
+            text={
+              error.response.data.non_field_errors
+                ? error.response.data.non_field_errors[0]
+                : error.response.statusText
+            }
+            type="error"
+          />
+        )}
+        {isSuccess && <Alert text="Success redirecting.." type="success" />}
       </div>
 
       <div className="w-full max-w-sm mx-auto mt-10 sm:mt-0 overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
@@ -90,7 +80,9 @@ function Login() {
           {/* Social */}
           <div className="flex flex-col space-y-3 mt-5">
             <a
-              className="btn w-full bg-white flex justify-center xs:justify-start"
+              className={`btn w-full bg-white flex justify-center xs:justify-start ${
+                loadingExchangeToken ? "btn-disabled " : ""
+              }`}
               href={googleUrl}
               target="_self"
             >
@@ -100,7 +92,9 @@ function Login() {
               </span>
             </a>
             <a
-              className="btn w-full bg-white flex justify-center xs:justify-start"
+              className={`btn w-full bg-white flex justify-center xs:justify-start ${
+                loadingExchangeToken ? "btn-disabled" : ""
+              }`}
               href={githubUrl}
               target="_self"
             >

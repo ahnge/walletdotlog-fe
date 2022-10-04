@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSideBar } from "../../context/SidebarContext";
-import { useWallet } from "../../context/WalletContext";
 import { Hamburger } from "../svgs/DashboardIcons";
-import useAxios from "../../utils/useAxios";
+import useAxios from "../../hooks/useAxios";
 import { useNavigate } from "react-router-dom";
 import Table from "../Table";
 import Pagination from "../Pagination";
@@ -17,48 +16,46 @@ const Logs = () => {
 
   // sideBar State
   const { sideBarDispatch } = useSideBar();
-  // wallet State
-  const { walletState, walletDispatch } = useWallet();
 
   // intercepted axios
-  const ai = useAxios();
+  const axiosInstance = useAxios();
 
   const navigate = useNavigate();
 
   // functions
-  const handleChange = (e) => {
-    console.log("hi", e.target.value);
-    const newW = walletState.wallets.filter((w) => w.name === e.target.value);
-    walletDispatch({ type: "setCurrentWallet", payload: newW[0] });
-    setCurrentPage(1);
-  };
+  // const handleChange = (e) => {
+  //   console.log("hi", e.target.value);
+  //   const newW = walletState.wallets.filter((w) => w.name === e.target.value);
+  //   walletDispatch({ type: "setCurrentWallet", payload: newW[0] });
+  //   setCurrentPage(1);
+  // };
 
-  const getLogs = async (id) => {
-    setLoadingLogs(true);
-    const res = await ai.get(
-      `/api/wallet/${id}/log/list-create/?page=${currentPage}`
-    );
-    console.log("getLogs success in logs");
-    console.log(`walletId in logs: ${id} logs`, res);
-    setLogs(res.data.results);
-    setTotalCount(res.data.count);
-    setLoadingLogs(false);
-  };
+  // const getLogs = async (id) => {
+  //   setLoadingLogs(true);
+  //   const res = await ai.get(
+  //     `/api/wallet/${id}/log/list-create/?page=${currentPage}`
+  //   );
+  //   console.log("getLogs success in logs");
+  //   console.log(`walletId in logs: ${id} logs`, res);
+  //   setLogs(res.data.results);
+  //   setTotalCount(res.data.count);
+  //   setLoadingLogs(false);
+  // };
 
   // useEffects
   // Don't come to this route if you don't own a wallet
-  useEffect(() => {
-    if (walletState.wallets.length < 1) {
-      navigate("/dashboard");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (walletState.wallets.length < 1) {
+  //     navigate("/dashboard");
+  //   }
+  // }, []);
 
-  // get the logs if there is a wallet to show
-  useEffect(() => {
-    if (walletState.currentWallet) {
-      getLogs(walletState.currentWallet.id);
-    }
-  }, [walletState.currentWallet, currentPage]);
+  // // get the logs if there is a wallet to show
+  // useEffect(() => {
+  //   if (walletState.currentWallet) {
+  //     getLogs(walletState.currentWallet.id);
+  //   }
+  // }, [walletState.currentWallet, currentPage]);
 
   return (
     <div className="ml-auto min-h-screen lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
@@ -87,7 +84,7 @@ const Logs = () => {
       <div className="px-6 pt-6 2xl:container">
         <div className="flex justify-start flex-col min-h-[80vh] border-gray-300 rounded-xl">
           {/* Button */}
-          {walletState.wallets.length > 1 && (
+          {/* {walletState.wallets.length > 1 && (
             <select
               className="select select-secondary w-full max-w-md"
               defaultValue={
@@ -102,7 +99,7 @@ const Logs = () => {
                 return <option key={index}>{w.name}</option>;
               })}
             </select>
-          )}
+          )} */}
           {/* Table */}
           <Table
             logs={logs}
