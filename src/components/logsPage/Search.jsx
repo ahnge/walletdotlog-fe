@@ -1,42 +1,49 @@
 import React, { useState } from "react";
-// import { useWallet } from "../../context/WalletContext";
 import useAxios from "../../hooks/useAxios";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SearchIcon } from "../svgs/DashboardIcons";
+import { useGlobalContext } from "../../context/GlobalContext";
 
-const Search = ({ setLogs, setLoadingLogs, currentPage, setTotalCount }) => {
+const Search = ({ currentPage, setTotalCount, search, setSearch }) => {
   // local states
-  const [search, setSearch] = useState("");
+  const [goFind, setGoFind] = useState(false);
 
-  // walletState
-  // const { walletState } = useWallet();
+  const { globalState } = useGlobalContext();
 
   // intercepted axios
   const axiosInstance = useAxios();
 
-  const handleSubmit = () => {};
+  const queryClient = useQueryClient();
 
-  // functions
-  // const getLogs = async (id) => {
-  //   setLoadingLogs(true);
-  //   const res = await ai.get(
-  //     `/api/wallet/${id}/log/list-create/?page=${currentPage}&search=${search}`
-  //   );
-  //   console.log("getLogs success in logs");
-  //   console.log(`walletId in logs: ${id} logs`, res);
-  //   setLogs(res.data.results);
-  //   setTotalCount(res.data.count);
-  //   setLoadingLogs(false);
-  // };
+  const getSearchLogs = ({ queryKey }) => {
+    const id = queryKey[1];
+    return axiosInstance
+      .get(`api/wallet/${id}/log/list-create/?search=${search}`)
+      .then((res) => res.data);
+  };
 
-  // const handleSearch = (e) => {
-  //   e.preventDefault();
-  //   if (walletState.currentWallet) {
-  //     getLogs(walletState.currentWallet.id).catch((err) =>
-  //       console.log("get logs err", err)
-  //     );
-  //   }
-  //   setSearch("");
-  // };
+  const { data, status } = useQuery(
+    ["searchLogs", globalState.currentWallet.id],
+    getSearchLogs,
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData(
+          ["allLogs", globalState.currentWallet.id, currentPage],
+          () => data
+        );
+        setTotalCount(data.count);
+      },
+      enabled: !!goFind,
+    }
+  );
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setGoFind(true);
+    setTimeout(() => {
+      setGoFind(false);
+    }, 1000);
+  };
 
   return (
     <form className="form-control" onSubmit={handleSubmit}>

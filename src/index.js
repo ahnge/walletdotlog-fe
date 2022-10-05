@@ -12,8 +12,8 @@ import ForgotPassPage from "./pages/ForgotPassPage";
 import PasswordResetConfirmPage from "./pages/PasswordResetConfirmPage";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import LogsPage from "./pages/LogsPage";
-import { SideBarProvider } from "./context/SidebarContext";
 import PrivateOutletDashboard from "./components/PrivateOutletDashboard";
+import { GlobalProvider } from "./context/GlobalContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
@@ -24,7 +24,7 @@ root.render(
   // <React.StrictMode>
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <SideBarProvider>
+      <GlobalProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<App />}>
@@ -50,7 +50,7 @@ root.render(
             </Route>
           </Routes>
         </BrowserRouter>
-      </SideBarProvider>
+      </GlobalProvider>
     </AuthProvider>
     <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
   </QueryClientProvider>

@@ -3,13 +3,13 @@ import { useAuth } from "../context/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "./svgs/Logo";
 import { FourDots, LogoutIcon, ReportIcon } from "./svgs/DashboardIcons";
-import { useSideBar } from "../context/SidebarContext";
 import axios from "axios";
+import { useGlobalContext } from "../context/GlobalContext";
 
 const Aside = () => {
   // auth state
   const { authState, authDispatch } = useAuth();
-  const { sideBarState, sideBarDispatch } = useSideBar();
+  const { globalState, globalDispatch } = useGlobalContext();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -37,14 +37,14 @@ const Aside = () => {
 
   return (
     <aside
-      className={`ml-[-100%] fixed z-20 top-0 pb-3 px-6 w-full flex flex-col justify-between h-screen border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%] ${
-        sideBarState.open ? "ml-0" : ""
+      className={`ml-[-100%] fixed z-50 top-0 pb-3 px-6 w-full flex flex-col justify-between h-screen border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%] ${
+        globalState.open ? "ml-0" : ""
       }`}
     >
       <div className="relative">
         <button
           className="btn-circle btn absolute top-10 right-0 lg:hidden"
-          onClick={() => sideBarDispatch({ type: "toggle" })}
+          onClick={() => globalDispatch({ type: "toggle" })}
         >
           X
         </button>
@@ -76,7 +76,7 @@ const Aside = () => {
                   className={`btn gap-2 btn-block ${
                     location.pathname === n.route ? "btn-active" : "btn-outline"
                   }`}
-                  onClick={() => sideBarDispatch({ type: "close" })}
+                  onClick={() => globalDispatch({ type: "close" })}
                 >
                   {n.icon}
                   <span className="-mr-1 font-medium">{n.name}</span>

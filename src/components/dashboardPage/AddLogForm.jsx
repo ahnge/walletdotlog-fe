@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import useAxios from "../../hooks/useAxios";
 import Alert from "../Alert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useGlobalContext } from "../../context/GlobalContext";
 
-const AddLogForm = ({
-  setPlusLogFormOpen,
-  currentWallet,
-  setCurrentWallet,
-}) => {
+const AddLogForm = ({ setPlusLogFormOpen }) => {
   // local states
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+
+  const { globalState, globalDispatch } = useGlobalContext();
 
   // intercepted axios
   const axiosInstance = useAxios();
@@ -19,7 +18,7 @@ const AddLogForm = ({
 
   const addLog = () => {
     return axiosInstance
-      .post(`api/wallet/${currentWallet.id}/log/list-create/`, {
+      .post(`api/wallet/${globalState.currentWallet.id}/log/list-create/`, {
         amount,
         description,
         log_type: "p",
@@ -29,21 +28,23 @@ const AddLogForm = ({
 
   const { mutate, status } = useMutation(addLog, {
     onSuccess: (data) => {
-      console.log(data);
-      queryClient.setQueryData(["logs", currentWallet.id], (old) => [
-        ...old,
-        data,
-      ]);
+      queryClient.setQueryData(
+        ["logs", globalState.currentWallet.id],
+        (old) => [data, ...old]
+      );
       queryClient.setQueryData(["wallets"], (old) => {
         const newWallets = old.map((w) => {
-          if (w.id !== currentWallet.id) return w;
+          if (w.id !== globalState.currentWallet.id) return w;
           return { ...w, amount: w.amount + parseInt(amount) };
         });
         return newWallets;
       });
-      setCurrentWallet({
-        ...currentWallet,
-        amount: currentWallet.amount + parseInt(amount),
+      globalDispatch({
+        type: "setCurrentWallet",
+        payload: {
+          ...globalState.currentWallet,
+          amount: globalState.currentWallet.amount + parseInt(amount),
+        },
       });
       setPlusLogFormOpen((p) => !p);
     },

@@ -1,47 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useAxios from "../../hooks/useAxios";
 import { Hamburger } from "../svgs/DashboardIcons";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AddLogForm from "./AddLogForm";
 import AddWalletForm from "./AddWalletForm";
 import SubstractLogForm from "./SubstractLogForm";
 import Table from "../Table";
-import { useAuth } from "../../context/AuthContext";
 import Alert from "../Alert";
-import { useSideBar } from "../../context/SidebarContext";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useGlobalContext } from "../../context/GlobalContext";
 
 const Dashboard = () => {
   // local states
-  const [currentWallet, setCurrentWallet] = useState({});
-
   const [walletFormOpen, setWalletFormOpen] = useState(false);
   const [pulsLogFormOpen, setPlusLogFormOpen] = useState(false);
   const [minusLogFormOpen, setMinusLogFormOpen] = useState(false);
 
-  // const [logs, setLogs] = useState([]);
-
-  // const [loadingWallets, setLoadingWallets] = useState(false);
-  // const [loadingLogs, setLoadingLogs] = useState(true);
-
-  // local states -- alert
-  // const [addWalletSuccess, setAddWalletSuccess] = useState(false);
-  // const [addWalletErr, setAddWalletErr] = useState(false);
-  // const [addLogSuccess, setAddLogSuccess] = useState(false);
-  // const [substractLogSuccess, setSubstractLogSuccess] = useState(false);
-  // const [addLogErr, setAddLogErr] = useState(false);
-  // const [substractLogErr, setSubstractLogErr] = useState(false);
-  // const [insufficientErr, setInsufficientErr] = useState(false);
-
-  // auth state
-  const { authDispatch } = useAuth();
-  // sideBar state
-  const { sideBarDispatch } = useSideBar();
-  // wallet state
-  // const { walletState, walletDispatch } = useWallet();
-
-  // navigate
-  const navigate = useNavigate();
+  const { globalState, globalDispatch } = useGlobalContext();
 
   // intercepted axios
   const axiosInstance = useAxios();
@@ -63,7 +38,9 @@ const Dashboard = () => {
     error: walletsError,
   } = useQuery(["wallets"], getWallets, {
     onSuccess: (data) => {
-      if (data.length > 0 && !currentWallet.id) setCurrentWallet(data[0]);
+      if (data.length > 0 && !globalState.currentWallet.id) {
+        globalDispatch({ type: "setCurrentWallet", payload: data[0] });
+      }
     },
   });
 
@@ -71,13 +48,13 @@ const Dashboard = () => {
     status: logsStatus,
     data: logs,
     error: logsError,
-  } = useQuery(["logs", currentWallet.id], getLogs, {
-    enabled: !!currentWallet.id,
+  } = useQuery(["logs", globalState.currentWallet.id], getLogs, {
+    enabled: !!globalState.currentWallet.id,
   });
 
   const handleChange = (e) => {
     const newW = wallets.filter((w) => w.name === e.target.value);
-    setCurrentWallet(newW[0]);
+    globalDispatch({ type: "setCurrentWallet", payload: newW[0] });
   };
 
   return (
@@ -104,14 +81,14 @@ const Dashboard = () => {
 
       <div className="ml-auto min-h-screen lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
         {/* Top bar */}
-        <div className="sticky z-10 top-0 h-16 border-b bg-white lg:py-2.5">
+        <div className="sticky z-30 top-0 h-16 border-b bg-white lg:py-2.5">
           <div className="px-6 flex items-center justify-between space-x-4 2xl:container">
             <h5 hidden className="text-2xl text-gray-600 font-medium lg:block">
               Dashboard
             </h5>
             <button
               className="w-12 h-16 -mr-2 border-r lg:hidden"
-              onClick={() => sideBarDispatch({ type: "toggle" })}
+              onClick={() => globalDispatch({ type: "toggle" })}
             >
               <Hamburger />
             </button>
@@ -149,19 +126,21 @@ const Dashboard = () => {
                   </div>
                 </div>
               )}
-              {walletsStatus === "success" && wallets.length > 0 ? (
+              {walletsStatus === "success" && wallets.length > 0 && (
                 <div className="card w-full max-w-sm h-fit bg-white shadow-xl">
                   <div className="card-body">
-                    <h2 className="font-bold text-2xl">{currentWallet.name}</h2>
+                    <h2 className="font-bold text-2xl">
+                      {globalState.currentWallet.name}
+                    </h2>
                     <div className="stat">
                       <div className="stat-title">Current balance</div>
                       <div className="stat-value">
-                        Ks {currentWallet.amount}
+                        Ks {globalState.currentWallet.amount}
                       </div>
                       <div className="mt-5 flex justify-start space-x-3">
                         <button
                           className={`btn btn-circle text-2xl ${
-                            !currentWallet ? "disabled" : ""
+                            !globalState.currentWallet ? "btn-disabled " : ""
                           }`}
                           onClick={() => setPlusLogFormOpen((p) => !p)}
                         >
@@ -169,7 +148,10 @@ const Dashboard = () => {
                         </button>
                         <button
                           className={`btn btn-circle text-2xl ${
-                            !currentWallet ? "disabled" : ""
+                            !globalState.currentWallet ||
+                            globalState.currentWallet.amount == 0
+                              ? "btn-disabled "
+                              : ""
                           }`}
                           onClick={() => setMinusLogFormOpen((p) => !p)}
                         >
@@ -179,7 +161,8 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-              ) : (
+              )}
+              {walletsStatus === "success" && wallets.length === 0 && (
                 <div className="card-body">
                   <h2 className="font-bold text-2xl">You have no wallet.</h2>
                 </div>
@@ -211,7 +194,7 @@ const Dashboard = () => {
             </div>
             {/* Card end */}
 
-            {currentWallet.id && (
+            {globalState.currentWallet.id && (
               <Table
                 logs={logs}
                 loadingLogs={logsStatus === "loading"}
@@ -219,9 +202,9 @@ const Dashboard = () => {
                 loadingRows={8}
               />
             )}
-            {/* <Link to={"/dashboard/logs"} className="btn w-fit">
-              See more
-            </Link> */}
+            <Link to={"/dashboard/logs"} className="btn w-fit">
+              See all
+            </Link>
           </div>
         </div>
 
@@ -230,19 +213,11 @@ const Dashboard = () => {
         )}
 
         {pulsLogFormOpen && (
-          <AddLogForm
-            setPlusLogFormOpen={setPlusLogFormOpen}
-            currentWallet={currentWallet}
-            setCurrentWallet={setCurrentWallet}
-          />
+          <AddLogForm setPlusLogFormOpen={setPlusLogFormOpen} />
         )}
 
         {minusLogFormOpen && (
-          <SubstractLogForm
-            setMinusLogFormOpen={setMinusLogFormOpen}
-            currentWallet={currentWallet}
-            setCurrentWallet={setCurrentWallet}
-          />
+          <SubstractLogForm setMinusLogFormOpen={setMinusLogFormOpen} />
         )}
       </div>
     </>

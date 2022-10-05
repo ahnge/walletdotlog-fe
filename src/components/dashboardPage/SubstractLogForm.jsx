@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import Alert from "../Alert";
 import useAxios from "../../hooks/useAxios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useGlobalContext } from "../../context/GlobalContext";
 
-const SubstractLogForm = ({
-  setMinusLogFormOpen,
-  currentWallet,
-  setCurrentWallet,
-}) => {
+const SubstractLogForm = ({ setMinusLogFormOpen, setCurrentWallet }) => {
   // local states
   const [amount, setAmount] = useState();
   const [description, setDescription] = useState();
+
+  const { globalState, globalDispatch } = useGlobalContext();
 
   // intercepted axios
   const axiosInstance = useAxios();
@@ -31,7 +30,7 @@ const SubstractLogForm = ({
 
   const substractLog = () => {
     return axiosInstance
-      .post(`api/wallet/${currentWallet.id}/log/list-create/`, {
+      .post(`api/wallet/${globalState.currentWallet.id}/log/list-create/`, {
         amount,
         description,
         log_type: "n",
@@ -41,21 +40,28 @@ const SubstractLogForm = ({
 
   const { mutate, status } = useMutation(substractLog, {
     onSuccess: (data) => {
-      queryClient.setQueryData(["logs", currentWallet.id], (old) => [
-        ...old,
-        data,
-      ]);
+      queryClient.setQueryData(
+        ["logs", globalState.currentWallet.id],
+        (old) => [data, ...old]
+      );
       queryClient.setQueryData(["wallets"], (old) => {
         const newWallets = old.map((w) => {
-          if (w.id !== currentWallet.id) return w;
-          return { ...w, amount: calculateNewAmount(currentWallet) };
+          if (w.id !== globalState.currentWallet.id) return w;
+          return {
+            ...w,
+            amount: calculateNewAmount(globalState.currentWallet),
+          };
         });
         return newWallets;
       });
-      setCurrentWallet({
-        ...currentWallet,
-        amount: calculateNewAmount(currentWallet),
+      globalDispatch({
+        type: "setCurrentWallet",
+        payload: {
+          ...globalState.currentWallet,
+          amount: calculateNewAmount(globalState.currentWallet),
+        },
       });
+
       setMinusLogFormOpen((p) => !p);
     },
   });
@@ -65,33 +71,6 @@ const SubstractLogForm = ({
     mutate();
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   const substractLog = async () => {
-  //     const data = { amount, description, log_type: "n" };
-  //     setLoading(true);
-  //     const res = await ai.post(
-  //       `/api/wallet/${walletState.currentWallet.id}/log/list-create/`,
-  //       data
-  //     );
-  //     console.log("addLog success", res);
-  //     updateCurrentWallet();
-  //     setLoading(false);
-  //     setSubstractLogSuccess(true);
-  //     getLogs(walletState.currentWallet.id).catch((err) =>
-  //       console.log("getLogs err", err)
-  //     );
-  //     setTimeout(() => setSubstractLogSuccess(false), 3000);
-  //     setMinusLogFormOpen((p) => !p);
-  //   };
-  //   substractLog().catch((err) => {
-  //     console.log(err);
-  //     setLoading(false);
-  //     setSubstractLogErr(true);
-  //     setTimeout(() => setSubstractLogErr(false), 3000);
-  //     setMinusLogFormOpen((p) => !p);
-  //   });
-  // };
   return (
     <>
       {/* Alert */}
