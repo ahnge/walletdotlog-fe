@@ -6,7 +6,6 @@ import AddLogForm from "./AddLogForm";
 import AddWalletForm from "./AddWalletForm";
 import SubstractLogForm from "./SubstractLogForm";
 import Table from "../Table";
-import Alert from "../Alert";
 import { useQuery } from "@tanstack/react-query";
 import { useGlobalContext } from "../../context/GlobalContext";
 
@@ -59,26 +58,6 @@ const Dashboard = () => {
 
   return (
     <>
-      {/* Alert */}
-      <div className="fixed top-20 right-10 w-fit z-50 transition duration-500 flex flex-col space-y-3">
-        {/* {addWalletSuccess && (
-          <Alert text="Add wallet success!" type="success" />
-        )}
-        {(addWalletErr || addLogErr || substractLogErr) && (
-          <Alert text="Something went wrong!" type="error" />
-        )}
-        {addLogSuccess && <Alert text="Add log success!" type="success" />}
-        {substractLogSuccess && (
-          <Alert text="Substract log success!" type="success" />
-        )}
-        {insufficientErr && (
-          <Alert
-            text="You can't substract more than what you have!!"
-            type="warning"
-          />
-        )} */}
-      </div>
-
       <div className="ml-auto min-h-screen lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
         {/* Top bar */}
         <div className="sticky z-30 top-0 h-16 border-b bg-white lg:py-2.5">
@@ -100,7 +79,7 @@ const Dashboard = () => {
         <div className="px-6 pt-6 2xl:container">
           <div className="flex justify-start py-10 flex-col min-h-[80vh] border-gray-300 rounded-xl">
             {/* Card */}
-            <div className="flex flex-col md:flex-row md:space-x-10">
+            <div className="flex flex-col md:flex-row md:justify-start md:space-x-10">
               {walletsStatus == "loading" && (
                 <div className="card w-full max-w-sm h-fit bg-white shadow-xl">
                   <div className="card-body animate-pulse">
@@ -163,9 +142,9 @@ const Dashboard = () => {
                 </div>
               )}
               {walletsStatus === "success" && wallets.length === 0 && (
-                <div className="card-body">
-                  <h2 className="font-bold text-2xl">You have no wallet.</h2>
-                </div>
+                <h2 className="font-bold p-9 text-2xl w-fit">
+                  You have no wallet.
+                </h2>
               )}
 
               {/* Button group */}
@@ -202,9 +181,11 @@ const Dashboard = () => {
                 loadingRows={8}
               />
             )}
-            <Link to={"/dashboard/logs"} className="btn w-fit">
-              See all
-            </Link>
+            {logs?.length > 0 && (
+              <Link to={"/dashboard/logs"} className="btn w-fit">
+                See all
+              </Link>
+            )}
           </div>
         </div>
 

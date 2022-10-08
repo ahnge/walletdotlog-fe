@@ -2,7 +2,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useAuth } from "../context/AuthContext";
 
-const baseURL = "http://127.0.0.1:8000/";
+export const baseURL = "http://127.0.0.1:8000/";
 
 const useAxios = () => {
   // auth states

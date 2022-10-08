@@ -27,6 +27,16 @@ const authReducer = (state, action) => {
         user: jwt_decode(action.payload.access),
       };
     }
+    case "updateProfile": {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          full_name: action.payload.full_name,
+          profile_img: action.payload.image,
+        },
+      };
+    }
     default: {
       throw new Error(`Unabled action type: ${action.type}`);
     }

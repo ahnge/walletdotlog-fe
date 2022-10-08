@@ -16,6 +16,7 @@ import PrivateOutletDashboard from "./components/PrivateOutletDashboard";
 import { GlobalProvider } from "./context/GlobalContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import SettingsPage from "./pages/SettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ root.render(
             <Route path="/dashboard" element={<PrivateOutletDashboard />}>
               <Route index element={<DashboardPage />}></Route>
               <Route path="logs" element={<LogsPage />}></Route>
+              <Route path="settings" element={<SettingsPage />}></Route>
             </Route>
           </Routes>
         </BrowserRouter>

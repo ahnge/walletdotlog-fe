@@ -2,7 +2,12 @@ import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "./svgs/Logo";
-import { FourDots, LogoutIcon, ReportIcon } from "./svgs/DashboardIcons";
+import {
+  FourDots,
+  LogoutIcon,
+  ReportIcon,
+  SettingIcon,
+} from "./svgs/DashboardIcons";
 import axios from "axios";
 import { useGlobalContext } from "../context/GlobalContext";
 
@@ -33,6 +38,7 @@ const Aside = () => {
   const navs = [
     { route: "/dashboard", name: "Dashboard", icon: <FourDots /> },
     { route: "/dashboard/logs", name: "Logs", icon: <ReportIcon /> },
+    { route: "/dashboard/settings", name: "Settings", icon: <SettingIcon /> },
   ];
 
   return (
@@ -75,6 +81,10 @@ const Aside = () => {
                   aria-label={n.name}
                   className={`btn gap-2 btn-block ${
                     location.pathname === n.route ? "btn-active" : "btn-outline"
+                  } ${
+                    !globalState.currentWallet.id && n.name === "Logs"
+                      ? "btn-disabled"
+                      : ""
                   }`}
                   onClick={() => globalDispatch({ type: "close" })}
                 >

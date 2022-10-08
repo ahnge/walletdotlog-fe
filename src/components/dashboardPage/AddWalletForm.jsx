@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import useAxios from "../../hooks/useAxios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Alert from "../Alert";
+import { useGlobalContext } from "../../context/GlobalContext";
 
 const AddWalletForm = ({ setWalletFormOpen }) => {
   // local states
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
+
+  const { globalState, globalDispatch } = useGlobalContext();
 
   // intercepted axios
   const ai = useAxios();
@@ -22,6 +25,10 @@ const AddWalletForm = ({ setWalletFormOpen }) => {
   const { mutate, status } = useMutation(addWallet, {
     onSuccess: (data) => {
       queryClient.setQueryData(["wallets"], (old) => [...old, data]);
+      console.log(data);
+      if (!globalState.currentWallet.id) {
+        globalDispatch({ type: "setCurrentWallet", payload: data });
+      }
       setWalletFormOpen((p) => !p);
     },
     onSettled: () => {
@@ -65,7 +72,7 @@ const AddWalletForm = ({ setWalletFormOpen }) => {
                 type="number"
                 className="input input-bordered w-full input-primary text-black"
                 placeholder="Initial amount"
-                min="1"
+                min="0"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 required
