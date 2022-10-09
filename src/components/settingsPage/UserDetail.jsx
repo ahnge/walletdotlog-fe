@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useMutation } from "@tanstack/react-query";
 import useAxios from "../../hooks/useAxios";
+import Alert from "../Alert";
 
 export function UserDetail() {
   const { authState, authDispatch } = useAuth();
@@ -32,6 +33,13 @@ export function UserDetail() {
   };
   return (
     <div className="w-full max-w-lg mx-auto mt-10 sm:mt-0 overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
+      {/* Alert */}
+      {status === "error" && (
+        <Alert type="error" text="Something went wrong!" />
+      )}
+      {status === "success" && <Alert type="success" text="Success!" />}
+      {/* Alert End */}
+      {/* Form */}
       <form className=" card-body" onSubmit={handleSubmit}>
         <h2 className="font-bold text-xl">User</h2>
         <div className="form-control">

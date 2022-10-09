@@ -23,6 +23,12 @@ const globalReducer = (state, action) => {
         currentWallet: action.payload,
       };
     }
+    case "updateName": {
+      return {
+        ...state,
+        currentWallet: { ...state.currentWallet, name: action.payload },
+      };
+    }
     default: {
       throw new Error(`Unabled action type: ${action.type}`);
     }

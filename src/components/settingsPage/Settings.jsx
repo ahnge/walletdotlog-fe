@@ -1,6 +1,6 @@
-import { WalletForm } from "./WalletForm";
+import { Wallets } from "./Wallets";
 import { UserDetail } from "./UserDetail";
-import React from "react";
+import React, { useState } from "react";
 import { Hamburger } from "../svgs/DashboardIcons";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGlobalContext } from "../../context/GlobalContext";
@@ -9,6 +9,10 @@ const Settings = () => {
   const { globalDispatch } = useGlobalContext();
 
   const queryClient = useQueryClient();
+
+  const [wallets, setWallets] = useState(
+    queryClient.getQueryData(["wallets"]) || []
+  );
 
   return (
     <div className="ml-auto min-h-screen lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
@@ -31,15 +35,8 @@ const Settings = () => {
       <div className="px-6 2xl:container">
         <div className="flex justify-start flex-col space-y-10 min-h-[80vh] border-gray-300 rounded-xl py-10">
           <UserDetail />
-          {parseInt(queryClient.getQueryData(["wallets"])?.length) > 0 && (
-            <div className="w-full max-w-lg mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
-              <div className="card-body">
-                <h2 className="text-lg font-bold">Wallets</h2>
-                {queryClient.getQueryData(["wallets"]).map((w) => {
-                  return <WalletForm w={w} key={w.id} />;
-                })}
-              </div>
-            </div>
+          {parseInt(wallets?.length) > 0 && (
+            <Wallets wallets={wallets} setWallets={setWallets} />
           )}
         </div>
       </div>
