@@ -46,16 +46,15 @@ const PasswordResetConfirm = () => {
   return (
     <>
       {/* Alerts */}
-      <div className="fixed top-20 z-50 right-10 w-fit transition duration-500 flex flex-col space-y-3">
-        {isError && error.response.data.new_password2 ? (
-          error.response.data.new_password2.map((text) => {
-            return <Alert text={text} type="error" key={text} />;
-          })
-        ) : isError && error.response.data.token ? (
-          <Alert text="Invalid token. Please try later." type="error" />
-        ) : null}
-        {isSuccess && <Alert text={data.data.detail} type="success" />}
-      </div>
+      {isError && error.response.data.new_password2 ? (
+        error.response.data.new_password2.map((text) => {
+          return <Alert text={text} type="error" key={text} />;
+        })
+      ) : isError && error.response.data.token ? (
+        <Alert text="Invalid token. Please try later." type="error" />
+      ) : null}
+      {isSuccess && <Alert text={data.data.detail} type="success" />}
+      {/* Alert end */}
       <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
         <div className="px-6 py-4">
           <h3 className="mt-3 text-3xl font-bold text-center text-gray-600 dark:text-gray-200">

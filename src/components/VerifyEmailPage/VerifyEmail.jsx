@@ -27,17 +27,17 @@ const VerifyEmail = () => {
 
   return (
     <>
-      <div className="fixed z-50 top-20 right-10 w-fit transition duration-500 flex flex-col space-y-3">
-        {isError && (
-          <Alert text="Something went wrong. Redirecting..." type="error" />
-        )}
-        {isSuccess && (
-          <Alert
-            text="Email verified successfully! Redirecting.."
-            type="success"
-          />
-        )}
-      </div>
+      {/* Alert */}
+      {isError && (
+        <Alert text="Something went wrong. Redirecting..." type="error" />
+      )}
+      {isSuccess && (
+        <Alert
+          text="Email verified successfully! Redirecting.."
+          type="success"
+        />
+      )}
+      {/* Alert end */}
       <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
         <div className="px-6 py-4 flex flex-col items-center">
           <h3 className="mt-1 text-xl font-medium text-center text-gray-600 dark:text-gray-200">

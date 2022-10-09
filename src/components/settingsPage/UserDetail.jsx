@@ -66,7 +66,9 @@ export function UserDetail() {
         </div>
         <button
           type="submit"
-          className="btn btn-sm sm:btn-sm md:btn-md w-fit mt-3"
+          className={`btn btn-sm sm:btn-sm md:btn-md w-fit mt-3 ${
+            status === "loading" ? "loading" : ""
+          }`}
         >
           Save
         </button>

@@ -30,21 +30,21 @@ const ForgotPass = () => {
 
   return (
     <>
-      <div className=" fixed top-20 right-10 z-50 w-fit transition duration-500 flex flex-col space-y-3">
-        {isError && (
-          <Alert
-            text={
-              error.code === "ECONNABORTED"
-                ? "Connection timeout"
-                : error.response?.data?.email
-                ? error.response.data.email[0]
-                : error.response.statusText
-            }
-            type="error"
-          />
-        )}
-        {isSuccess && <Alert text={data.data.detail} type="success" />}
-      </div>
+      {/* Alert */}
+      {isError && (
+        <Alert
+          text={
+            error.code === "ECONNABORTED"
+              ? "Connection timeout"
+              : error.response?.data?.email
+              ? error.response.data.email[0]
+              : error.response.statusText
+          }
+          type="error"
+        />
+      )}
+      {isSuccess && <Alert text={data.data.detail} type="success" />}
+      {/* Alert end */}
 
       <div className="w-full max-w-sm">
         <Link to="/login" className="btn btn-md mb-8">

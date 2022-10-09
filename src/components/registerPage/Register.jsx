@@ -65,25 +65,24 @@ function Register() {
   return (
     <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
       {/* Alerts */}
-      <div className="fixed top-20 right-10 z-50 w-fit transition duration-500 flex flex-col space-y-3">
-        {isError && (
-          <Alert
-            text={
-              error.code === "ECONNABORTED"
-                ? "Connection timeout"
-                : error.response?.data?.email
-                ? error.response.data.email[0]
-                : error.response.data.non_field_errors
-                ? error.response.data.non_field_errors[0]
-                : error.response.statusText
-            }
-            type="error"
-          />
-        )}
-        {isSuccess && (
-          <Alert text="Registeration success! Loging in..." type="success" />
-        )}
-      </div>
+      {isError && (
+        <Alert
+          text={
+            error.code === "ECONNABORTED"
+              ? "Connection timeout"
+              : error.response?.data?.email
+              ? error.response.data.email[0]
+              : error.response.data.non_field_errors
+              ? error.response.data.non_field_errors[0]
+              : error.response.statusText
+          }
+          type="error"
+        />
+      )}
+      {isSuccess && (
+        <Alert text="Registeration success! Loging in..." type="success" />
+      )}
+      {/* Alert end */}
 
       <div className="px-6 py-4">
         <h3 className="mt-1 text-2xl sm:text-3xl font-bold text-center text-gray-600 dark:text-gray-200">

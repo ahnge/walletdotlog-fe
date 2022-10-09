@@ -1,7 +1,7 @@
 import { WalletForm } from "./WalletForm";
 import { UserDetail } from "./UserDetail";
 import React from "react";
-import { DeleteIcon, EditIcon, Hamburger } from "../svgs/DashboardIcons";
+import { Hamburger } from "../svgs/DashboardIcons";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGlobalContext } from "../../context/GlobalContext";
 

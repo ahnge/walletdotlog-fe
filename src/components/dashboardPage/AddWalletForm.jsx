@@ -45,11 +45,9 @@ const AddWalletForm = ({ setWalletFormOpen }) => {
   return (
     <>
       {/* Alert */}
-      <div className="fixed top-20 right-10 w-fit z-50 transition duration-500 flex flex-col space-y-3">
-        {status === "error" && (
-          <Alert type="error" text="Something went wrong!" />
-        )}
-      </div>
+      {status === "error" && (
+        <Alert type="error" text="Something went wrong!" />
+      )}
       {/* Alert End */}
       <div className="fixed flex justify-center items-center z-50 inset-0 px-10">
         <div

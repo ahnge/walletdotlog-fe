@@ -44,21 +44,21 @@ export function Loginform({ loadingExchangeToken }) {
 
   return (
     <>
-      <div className="fixed top-20 right-10 w-fit transition duration-500 flex flex-col space-y-3">
-        {isError && (
-          <Alert
-            text={
-              error.response.data.email
-                ? error.response.data.email[0]
-                : error.response.data.non_field_errors
-                ? error.response.data.non_field_errors[0]
-                : error.response.statusText
-            }
-            type="error"
-          />
-        )}
-        {isSuccess && <Alert text="Success redirecting.." type="success" />}
-      </div>
+      {/* Alert */}
+      {isError && (
+        <Alert
+          text={
+            error.response.data.email
+              ? error.response.data.email[0]
+              : error.response.data.non_field_errors
+              ? error.response.data.non_field_errors[0]
+              : error.response.statusText
+          }
+          type="error"
+        />
+      )}
+      {isSuccess && <Alert text="Success redirecting.." type="success" />}
+      {/* Alert end */}
       <form onSubmit={handleSubmit}>
         <div className="w-full mt-4">
           <input

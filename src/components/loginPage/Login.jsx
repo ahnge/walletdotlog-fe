@@ -57,19 +57,17 @@ function Login() {
   return (
     <>
       {/* Alert */}
-      <div className="fixed top-20 right-10 z-50 w-fit transition duration-500 flex flex-col space-y-3">
-        {isError && (
-          <Alert
-            text={
-              error.response.data.non_field_errors
-                ? error.response.data.non_field_errors[0]
-                : error.response.statusText
-            }
-            type="error"
-          />
-        )}
-        {isSuccess && <Alert text="Success redirecting.." type="success" />}
-      </div>
+      {isError && (
+        <Alert
+          text={
+            error.response.data.non_field_errors
+              ? error.response.data.non_field_errors[0]
+              : error.response.statusText
+          }
+          type="error"
+        />
+      )}
+      {isSuccess && <Alert text="Success redirecting.." type="success" />}
 
       <div className="w-full max-w-sm mx-auto mt-10 sm:mt-0 overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800 font-inter">
         <div className="px-6 py-9">
