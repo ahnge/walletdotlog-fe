@@ -15,7 +15,6 @@ import LogsPage from "./pages/LogsPage";
 import PrivateOutletDashboard from "./components/PrivateOutletDashboard";
 import { GlobalProvider } from "./context/GlobalContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import SettingsPage from "./pages/SettingsPage";
 
 const queryClient = new QueryClient();
@@ -54,7 +53,6 @@ root.render(
         </BrowserRouter>
       </GlobalProvider>
     </AuthProvider>
-    <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
   </QueryClientProvider>
   // </React.StrictMode>
 );

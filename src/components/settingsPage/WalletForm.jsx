@@ -50,7 +50,7 @@ export function WalletForm({ w, setWallets }) {
         // change the wallets query
         queryClient.setQueryData(["wallets"], (old) => {
           const newWallets = old.filter((wl) => {
-            if (wl.id !== w.id) return wl;
+            return wl.id !== w.id;
           });
           // change the wallets state
           setWallets(newWallets);
