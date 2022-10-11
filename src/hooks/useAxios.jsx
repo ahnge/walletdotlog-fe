@@ -11,7 +11,6 @@ const useAxios = () => {
   // create axios instance with base config
   const axiosInstance = axios.create({
     baseURL,
-    timeout: 10000,
   });
 
   // intercept the axios instance

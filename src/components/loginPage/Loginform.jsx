@@ -53,6 +53,8 @@ export function Loginform({ loadingExchangeToken }) {
               : error.response.data.non_field_errors
               ? error.response.data.non_field_errors[0]
               : error.response.statusText
+              ? error.response.statusText
+              : "Something went wrong"
           }
           type="error"
         />
