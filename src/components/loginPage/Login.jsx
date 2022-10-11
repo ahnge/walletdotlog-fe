@@ -43,9 +43,9 @@ function Login() {
 
   // variables
   const googleUrl =
-    "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:3000/login&prompt=consent&response_type=code&client_id=205634597669-0v561vtjjmevogap6rs9nd34dhcp5gna.apps.googleusercontent.com&scope=openid%20email%20profile&access_type=online&state=google";
+    "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://walletdotlog.netlify.app/login&prompt=consent&response_type=code&client_id=205634597669-0v561vtjjmevogap6rs9nd34dhcp5gna.apps.googleusercontent.com&scope=openid%20email%20profile&access_type=online&state=google";
   const githubUrl =
-    "https://github.com/login/oauth/authorize?redirect_uri=http://localhost:3000/login&client_id=99ac0be5f459199f2a82&scope=user&state=github";
+    "https://github.com/login/oauth/authorize?redirect_uri=https://walletdotlog.netlify.app/login&client_id=99ac0be5f459199f2a82&scope=user&state=github";
 
   // useEffect
   useEffect(() => {
