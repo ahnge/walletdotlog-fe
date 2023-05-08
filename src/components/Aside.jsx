@@ -23,7 +23,7 @@ const Aside = () => {
   const handleLogout = () => {
     const blacklistToken = async () => {
       const res = await axios.post(
-        "https://walletdotlog.onrender.com/dj-rest-auth/logout/"
+        "https://api.walletdotlog.site/dj-rest-auth/logout/"
       );
       console.log("logout success", res);
       authDispatch({ type: "logout" });

@@ -2,7 +2,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useAuth } from "../context/AuthContext";
 
-export const baseURL = "https://walletdotlog.onrender.com/";
+export const baseURL = "https://api.walletdotlog.site/";
 
 const useAxios = () => {
   // auth states
@@ -15,8 +15,9 @@ const useAxios = () => {
 
   // intercept the axios instance
   axiosInstance.interceptors.request.use(async (config) => {
+    // If user has not login, we return just config
     if (!authState.user) return config;
-    console.log("i passed");
+
     const isExpired = dayjs.unix(authState.user?.exp).diff(dayjs()) < 1;
     if (!isExpired) {
       console.log("token is not expired");
