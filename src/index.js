@@ -12,6 +12,7 @@ import ForgotPassPage from "./pages/ForgotPassPage";
 import PasswordResetConfirmPage from "./pages/PasswordResetConfirmPage";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import LogsPage from "./pages/LogsPage";
+import PolicyPage from "./pages/PolicyPage";
 import PrivateOutletDashboard from "./components/PrivateOutletDashboard";
 import { GlobalProvider } from "./context/GlobalContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -30,6 +31,7 @@ root.render(
             <Route path="/" element={<App />}>
               <Route index element={<HomePage />}></Route>
               <Route path="/login" element={<LoginPage />}></Route>
+              <Route path="/policy" element={<PolicyPage />}></Route>
               <Route path="/register" element={<RegisterPage />}></Route>
               <Route
                 path="/password/reset"
