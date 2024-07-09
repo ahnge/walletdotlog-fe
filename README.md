@@ -1,6 +1,6 @@
 # Walletdotlog
 
-An expense tracker app. Just a basic CRUD api that I did all on my own without following the tutorial for practicing my react skills.
+An expense tracker app. Just a basic CRUD api with django and react for user interface.
 
 ## Features
 
